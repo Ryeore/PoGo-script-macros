@@ -41,7 +41,7 @@ def template_match(image, template):
 
 
 def match_location(template):
-    time.sleep(3)
+    time.sleep(2)
     # Capture screenshot of the screen
     screenshot = np.array(ImageGrab.grab())
     # Find the location of the template match
@@ -53,13 +53,12 @@ def match_location(template):
     pyautogui.moveTo(click_x, click_y)
     time.sleep(0.5)
     pyautogui.click()
-    time.sleep(2)
+    time.sleep(0.5)
 
 
 def click_refresh_receive():
     time.sleep(2)
     screenshot = np.array(ImageGrab.grab())
-    time.sleep(0.5)
     location = template_match(screenshot, reroll_receive)
     time.sleep(0.5)
     click_x = location[0] + reroll_receive.shape[1] // 2
@@ -111,14 +110,14 @@ def click_reroll_send():
 
 def refresh_receive_gift():
     click_refresh_receive()
-    time.sleep(2)
+    time.sleep(1)
     click_reroll_receive()
 
 
 def refresh_send_gift():
-    time.sleep(2)
+    time.sleep(1)
     click_refresh_send()
-    time.sleep(2)
+    time.sleep(1)
     click_reroll_send()
 
 
@@ -129,21 +128,31 @@ def first_in_list():
     click_y = location[1] + addfriend.shape[0] // 2
     pyautogui.click(click_x, click_y + 200)
 
-#set how many gifts you can send or receive
-gifts_available = 3
-#what you want to do receive/send gifts
-job = "send"
+
+# set how many gifts you can send or receive
+gifts_available = 20
+
+# what you want to do receive/send gifts
+job = "receive"
 
 time.sleep(3)
 
 if job == "receive":
     for a in range(0, gifts_available):
+        check = True
         match_location(isgift)
+        time.sleep(2)
         pyautogui.click(1000, 700)
         match_location(opengift)
-        time.sleep(8)
+        while check is True:
+            screenshot = np.array(ImageGrab.grab())
+            location = template_match(screenshot, close)
+            if location is not None:
+                # Template disappeared, return
+                check = False
         match_location(close)
         time.sleep(2)
+        print(f"Gifts received: {a+1}")
         refresh_receive_gift()
 
 if job == "send":
