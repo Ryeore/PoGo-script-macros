@@ -43,43 +43,25 @@ def template_match(image, template):
 def match_location(template):
     time.sleep(2)
     # Capture screenshot of the screen
-    screenshot = np.array(ImageGrab.grab())
-    # Find the location of the template match
-    location = template_match(screenshot, template)
-    # Calculate the coordinates to click on
-    click_x = location[0] + template.shape[1] // 2
-    click_y = location[1] + template.shape[0] // 2
-    # Click on the element
-    pyautogui.moveTo(click_x, click_y)
-    time.sleep(0.5)
-    pyautogui.click()
-    time.sleep(0.5)
+    found = True
+    while found:
+        screenshot = np.array(ImageGrab.grab())
+        location = template_match(screenshot, template)
+        if location is not None:
+            click_x = location[0] + template.shape[1] // 2
+            click_y = location[1] + template.shape[0] // 2
+            pyautogui.moveTo(click_x, click_y)
+            time.sleep(0.1)
+            pyautogui.click()
+            found = False
 
 
 def click_refresh_receive():
-    time.sleep(2)
-    screenshot = np.array(ImageGrab.grab())
-    location = template_match(screenshot, reroll_receive)
-    time.sleep(0.5)
-    click_x = location[0] + reroll_receive.shape[1] // 2
-    click_y = location[1] + reroll_receive.shape[0] // 2
-    time.sleep(0.5)
-    pyautogui.moveTo(click_x, click_y)
-    time.sleep(0.5)
-    pyautogui.click()
-    time.sleep(1)
+    match_location(reroll_receive)
 
 
 def click_refresh_send():
-    time.sleep(2)
-    screenshot = np.array(ImageGrab.grab())
-    location = template_match(screenshot, reroll_send)
-    click_x = location[0] + reroll_send.shape[1] // 2
-    click_y = location[1] + reroll_send.shape[0] // 2
-    pyautogui.moveTo(click_x, click_y)
-    time.sleep(0.5)
-    pyautogui.click()
-    time.sleep(1)
+    match_location(reroll_send)
 
 
 def click_reroll_receive():
@@ -133,7 +115,7 @@ def first_in_list():
 gifts_available = 20
 
 # what you want to do receive/send gifts
-job = "receive"
+job = "send"
 
 time.sleep(3)
 
@@ -157,7 +139,6 @@ if job == "receive":
 
 if job == "send":
     for a in range(0, gifts_available):
-        time.sleep(2)
         first_in_list()
         match_location(closegift)
         time.sleep(2)
@@ -165,11 +146,8 @@ if job == "send":
             match_location(quitgift)
         if template_match(np.array(ImageGrab.grab()), bonus):
             match_location(close)
-        time.sleep(2)
         match_location(sendgift)
         match_location(firstgift)
         match_location(pressend)
-        time.sleep(5)
         match_location(close)
-        time.sleep(5)
         refresh_send_gift()

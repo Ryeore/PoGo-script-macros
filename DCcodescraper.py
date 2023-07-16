@@ -20,6 +20,6 @@ def retrieve_messages(channelid):
         print(value['content'], '\n')
 
 
-retrieve_messages(459446258411503616)
+retrieve_messages(459446258411503616
 
 
